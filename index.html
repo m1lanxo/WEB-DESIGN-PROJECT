@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Lucky Dragon</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --red: #c0392b;
+      --gold: #d4a43a;
+      --cream: #fdf6ec;
+      --dark: #1e0a00;
+      --muted: #7a5c44;
+    }
+
+    body {
+      font-family: 'Nunito', sans-serif;
+      background: var(--cream);
+      color: var(--dark);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── NAV ── */
+    nav {
+      background: var(--dark);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 6vw;
+      height: 60px;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    .logo {
+      font-family: 'Noto Serif SC', serif;
+      color: var(--gold);
+      font-size: 1.25rem;
+      cursor: pointer;
+    }
+    .nav-btns {
+      display: flex;
+      gap: 4px;
+    }
+    .nav-btns button {
+      background: none;
+      border: none;
+      color: rgba(255,255,255,0.65);
+      font-family: 'Nunito', sans-serif;
+      font-size: 0.85rem;
+      padding: 6px 14px;
+      border-radius: 20px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .nav-btns button:hover { color: #fff; background: rgba(255,255,255,0.08); }
+    .nav-btns button.active { color: var(--dark); background: var(--gold); font-weight: 700; }
+
+    /* ── PAGES ── */
+    .page { display: none; padding: 3rem 6vw; animation: fadeIn 0.35s ease; flex: 1; }
+    .page.active { display: block; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* ── HOME ── */
+    .home-hero {
+      background: linear-gradient(135deg, var(--dark) 0%, #3d1000 100%);
+      border-radius: 12px;
+      padding: 4rem 3rem;
+      text-align: center;
+      color: #fff;
+      margin-bottom: 2rem;
+    }
+    .home-hero .emoji { font-size: 3.5rem; margin-bottom: 1rem; }
+    .home-hero h1 {
+      font-family: 'Noto Serif SC', serif;
+      font-size: clamp(2rem, 6vw, 3.5rem);
+      color: var(--gold);
+      margin-bottom: 0.5rem;
+    }
+    .home-hero p { color: rgba(255,255,255,0.65); font-size: 1rem; margin-bottom: 2rem; }
+    .home-hero .cta-row { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+    .btn-red {
+      background: var(--red);
+      color: #fff;
+      border: none;
+      padding: 0.7rem 1.8rem;
+      border-radius: 6px;
+      font-family: 'Nunito', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+    .btn-red:hover { opacity: 0.85; }
+    .btn-outline {
+      background: transparent;
+      color: var(--gold);
+      border: 2px solid var(--gold);
+      padding: 0.7rem 1.8rem;
+      border-radius: 6px;
+      font-family: 'Nunito', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-outline:hover { background: var(--gold); color: var(--dark); }
+
+    .info-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1rem;
+    }
+    .info-card {
+      background: #fff;
+      border-radius: 10px;
+      padding: 1.4rem;
+      text-align: center;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+    }
+    .info-card .icon { font-size: 1.8rem; margin-bottom: 0.5rem; }
+    .info-card h3 { font-size: 0.9rem; margin-bottom: 0.3rem; }
+    .info-card p { font-size: 0.8rem; color: var(--muted); line-height: 1.5; }
+
+    /* ── MENU ── */
+    .page-title {
+      font-family: 'Noto Serif SC', serif;
+      font-size: 1.8rem;
+      color: var(--dark);
+      margin-bottom: 0.3rem;
+    }
+    .page-sub { color: var(--muted); font-size: 0.9rem; margin-bottom: 1.8rem; }
+
+    .cat-tabs {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 1.5rem;
+    }
+    .cat-tab {
+      background: #fff;
+      border: 1.5px solid #e0d0c0;
+      color: var(--muted);
+      padding: 6px 16px;
+      border-radius: 20px;
+      font-size: 0.82rem;
+      font-family: 'Nunito', sans-serif;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .cat-tab.active, .cat-tab:hover {
+      background: var(--red);
+      border-color: var(--red);
+      color: #fff;
+    }
+
+    .dishes {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 1rem;
+    }
+    .dish {
+      background: #fff;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+      transition: transform 0.2s;
+    }
+    .dish:hover { transform: translateY(-3px); }
+    .dish-img {
+      height: 110px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 3rem;
+    }
+    .dish-info { padding: 0.9rem 1rem; }
+    .dish-name { font-weight: 700; font-size: 0.95rem; margin-bottom: 0.25rem; }
+    .dish-desc { font-size: 0.78rem; color: var(--muted); line-height: 1.5; margin-bottom: 0.6rem; }
+    .dish-bottom { display: flex; justify-content: space-between; align-items: center; }
+    .dish-price { color: var(--red); font-weight: 700; }
+    .dish-badge {
+      font-size: 0.68rem;
+      background: #fef3dc;
+      color: #b87a00;
+      padding: 2px 8px;
+      border-radius: 10px;
+    }
+
+    /* ── ABOUT ── */
+    .about-box {
+      background: #fff;
+      border-radius: 12px;
+      padding: 2rem;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+      margin-bottom: 1.2rem;
+    }
+    .about-box h2 { font-family: 'Noto Serif SC', serif; font-size: 1.3rem; margin-bottom: 0.8rem; color: var(--dark); }
+    .about-box p { color: var(--muted); line-height: 1.8; font-size: 0.9rem; margin-bottom: 0.7rem; }
+    .about-box p:last-child { margin-bottom: 0; }
+    .about-highlights {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 1rem;
+    }
+    .highlight {
+      background: #fff;
+      border-left: 3px solid var(--gold);
+      border-radius: 6px;
+      padding: 1rem 1.2rem;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+    .highlight .icon { font-size: 1.5rem; margin-bottom: 0.4rem; }
+    .highlight h4 { font-size: 0.85rem; margin-bottom: 0.2rem; }
+    .highlight p { font-size: 0.75rem; color: var(--muted); }
+
+    /* ── CONTACT ── */
+    .contact-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+    }
+    .contact-info-box {
+      background: var(--dark);
+      color: #fff;
+      border-radius: 12px;
+      padding: 2rem;
+    }
+    .contact-info-box h2 { font-family: 'Noto Serif SC', serif; color: var(--gold); margin-bottom: 1.2rem; }
+    .c-row { display: flex; gap: 0.8rem; align-items: flex-start; margin-bottom: 1rem; }
+    .c-icon { font-size: 1.2rem; margin-top: 2px; }
+    .c-text strong { display: block; font-size: 0.75rem; letter-spacing: 1px; text-transform: uppercase; color: var(--gold); margin-bottom: 3px; }
+    .c-text span { font-size: 0.85rem; color: rgba(255,255,255,0.7); line-height: 1.6; }
+
+    .res-box {
+      background: #fff;
+      border-radius: 12px;
+      padding: 2rem;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+    }
+    .res-box h2 { font-family: 'Noto Serif SC', serif; font-size: 1.2rem; margin-bottom: 1.2rem; }
+    .field { margin-bottom: 0.9rem; }
+    .field label { display: block; font-size: 0.75rem; color: var(--muted); letter-spacing: 0.5px; margin-bottom: 4px; }
+    .field input, .field select, .field textarea {
+      width: 100%;
+      border: 1.5px solid #e0d0c0;
+      border-radius: 6px;
+      padding: 0.55rem 0.8rem;
+      font-size: 0.88rem;
+      font-family: 'Nunito', sans-serif;
+      color: var(--dark);
+      background: var(--cream);
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .field input:focus, .field select:focus, .field textarea:focus { border-color: var(--red); }
+    .field textarea { min-height: 70px; resize: vertical; }
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; }
+
+    /* ── TOAST ── */
+    #toast {
+      position: fixed; bottom: 1.5rem; left: 50%;
+      transform: translateX(-50%) translateY(60px);
+      background: var(--dark);
+      color: #fff;
+      padding: 0.75rem 1.5rem;
+      border-radius: 6px;
+      font-size: 0.88rem;
+      border-left: 3px solid var(--gold);
+      transition: transform 0.35s;
+      z-index: 999;
+      white-space: nowrap;
+    }
+    #toast.show { transform: translateX(-50%) translateY(0); }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--dark);
+      color: rgba(255,255,255,0.4);
+      text-align: center;
+      padding: 1.2rem;
+      font-size: 0.78rem;
+    }
+    footer span { color: var(--gold); }
+
+    @media (max-width: 600px) {
+      .contact-grid { grid-template-columns: 1fr; }
+      .nav-btns button { padding: 5px 10px; font-size: 0.78rem; }
+      .home-hero { padding: 2.5rem 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="logo" onclick="showPage('home')">🐉 Lucky Dragon</div>
+  <div class="nav-btns">
+    <button class="active" onclick="showPage('home')">Home</button>
+    <button onclick="showPage('menu')">Menu</button>
+    <button onclick="showPage('about')">About</button>
+    <button onclick="showPage('contact')">Contact</button>
+  </div>
+</nav>
+
+<!-- ── HOME PAGE ── -->
+<div class="page active" id="page-home">
+  <div class="home-hero">
+    <div class="emoji">🥢</div>
+    <h1>Lucky Dragon</h1>
+    <p>Authentic Chinese cuisine made with love since 1998</p>
+    <div class="cta-row">
+      <button class="btn-red" onclick="showPage('menu')">View Menu</button>
+      <button class="btn-outline" onclick="showPage('contact')">Reserve a Table</button>
+    </div>
+  </div>
+
+  <div class="info-cards">
+    <div class="info-card">
+      <div class="icon">🕐</div>
+      <h3>Hours</h3>
+      <p>Mon–Thu: 11am–10pm<br>Fri–Sun: 11am–11pm</p>
+    </div>
+    <div class="info-card">
+      <div class="icon">📍</div>
+      <h3>Location</h3>
+      <p>88 Dragon Street<br>Chinatown, NY 10013</p>
+    </div>
+    <div class="info-card">
+      <div class="icon">📞</div>
+      <h3>Call Us</h3>
+      <p>(212) 888-8888</p>
+    </div>
+    <div class="info-card">
+      <div class="icon">🍜</div>
+      <h3>25+ Years</h3>
+      <p>Serving authentic family recipes</p>
+    </div>
+  </div>
+</div>
+
+<!-- ── MENU PAGE ── -->
+<div class="page" id="page-menu">
+  <div class="page-title">Our Menu</div>
+  <div class="page-sub">Fresh ingredients, traditional recipes</div>
+
+  <div class="cat-tabs">
+    <button class="cat-tab active" onclick="filterDish('all', this)">All</button>
+    <button class="cat-tab" onclick="filterDish('starter', this)">Starters</button>
+    <button class="cat-tab" onclick="filterDish('main', this)">Mains</button>
+    <button class="cat-tab" onclick="filterDish('noodle', this)">Noodles & Rice</button>
+    <button class="cat-tab" onclick="filterDish('dessert', this)">Desserts</button>
+  </div>
+
+  <div class="dishes" id="dishGrid">
+    <!-- Starters -->
+    <div class="dish" data-cat="starter">
+      <div class="dish-img" style="background:#fff8e6">🥟</div>
+      <div class="dish-info">
+        <div class="dish-name">Steamed Dumplings</div>
+        <div class="dish-desc">Pork & cabbage, hand-folded, with soy dip.</div>
+        <div class="dish-bottom"><span class="dish-price">$8.99</span><span class="dish-badge">Bestseller</span></div>
+      </div>
+    </div>
+    <div class="dish" data-cat="starter">
+      <div class="dish-img" style="background:#fff3e0">🌯</div>
+      <div class="dish-info">
+        <div class="dish-name">Spring Rolls (3 pcs)</div>
+        <div class="dish-desc">Crispy vegetable rolls with sweet chili sauce.</div>
+        <div class="dish-bottom"><span class="dish-price">$6.99</span><span class="dish-badge">Veg</span></div>
+      </div>
+    </div>
+    <div class="dish" data-cat="starter">
+      <div class="dish-img" style="background:#fce4ec">🍲</div>
+      <div class="dish-info">
+        <div class="dish-name">Hot & Sour Soup</div>
+        <div class="dish-desc">Tofu, mushrooms, bamboo shoots in spicy broth.</div>
+        <div class="dish-bottom"><span class="dish-price">$5.99</span><span class="dish-badge">Spicy</span></div>
+      </div>
+    </div>
+    <!-- Mains -->
+    <div class="dish" data-cat="main">
+      <div class="dish-img" style="background:#fff8e1">🍗</div>
+      <div class="dish-info">
+        <div class="dish-name">Kung Pao Chicken</div>
+        <div class="dish-desc">Chicken, peanuts & dried chilies in Sichuan sauce.</div>
+        <div class="dish-bottom"><span class="dish-price">$14.99</span><span class="dish-badge">Spicy</span></div>
+      </div>
+    </div>
+    <div class="dish" data-cat="main">
+      <div class="dish-img" style="background:#e8f5e9">🥦</div>
+      <div class="dish-info">
+        <div class="dish-name">Mapo Tofu</div>
+        <div class="dish-desc">Silky tofu in rich spicy bean sauce.</div>
+        <div class="dish-bottom"><span class="dish-price">$12.99</span><span class="dish-badge">Bestseller</span></div>
+      </div>
+    </div>
+    <div class="dish" data-cat="main">
+      <div class="dish-img" style="background:#fce4ec">🍖</div>
+      <div class="dish-info">
+        <div class="dish-name">Sweet & Sour Pork</div>
+        <div class="dish-desc">Crispy pork with bell peppers & pineapple.</div>
+        <div class="dish-bottom"><span class="dish-price">$15.99</span><span class="dish-badge">Classic</span></div>
+      </div>
+    </div>
+    <!-- Noodles -->
+    <div class="dish" data-cat="noodle">
+      <div class="dish-img" style="background:#fffde7">🍜</div>
+      <div class="dish-info">
+        <div class="dish-name">Beef Chow Mein</div>
+        <div class="dish-desc">Wok-tossed egg noodles with beef & veggies.</div>
+        <div class="dish-bottom"><span class="dish-price">$13.99</span><span class="dish-badge">Chef's Pick</span></div>
+      </div>
+    </div>
+    <div class="dish" data-cat="noodle">
+      <div class="dish-img" style="background:#e8f5e9">🍚</div>
+      <div class="dish-info">
+        <div class="dish-name">Egg Fried Rice</div>
+        <div class="dish-desc">Classic fried rice with egg, peas & sesame oil.</div>
+        <div class="dish-bottom"><span class="dish-price">$9.99</span><span class="dish-badge">Veg Option</span></div>
+      </div>
+    </div>
+    <!-- Desserts -->
+    <div class="dish" data-cat="dessert">
+      <div class="dish-img" style="background:#fffde7">🍮</div>
+      <div class="dish-info">
+        <div class="dish-name">Mango Pudding</div>
+        <div class="dish-desc">Chilled silky mango pudding with evaporated milk.</div>
+        <div class="dish-bottom"><span class="dish-price">$5.99</span><span class="dish-badge">Favorite</span></div>
+      </div>
+    </div>
+    <div class="dish" data-cat="dessert">
+      <div class="dish-img" style="background:#ede7f6">🥮</div>
+      <div class="dish-info">
+        <div class="dish-name">Sesame Balls (3 pcs)</div>
+        <div class="dish-desc">Fried rice balls with sweet red bean filling.</div>
+        <div class="dish-bottom"><span class="dish-price">$4.99</span><span class="dish-badge">Traditional</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── ABOUT PAGE ── -->
+<div class="page" id="page-about">
+  <div class="page-title">About Us</div>
+  <div class="page-sub">A family story, a lifetime of flavour</div>
+
+  <div class="about-box">
+    <h2>🐉 Our Story</h2>
+    <p>Lucky Dragon was founded in 1998 by the Chen family, who brought their grandmother's recipes all the way from Sichuan province to the heart of New York City.</p>
+    <p>For over 25 years, we have been welcoming guests like family — offering warm service, generous portions, and dishes that stay with you long after the last bite.</p>
+    <p>Whether you're a lifelong fan of Chinese cuisine or trying it for the very first time, we make it simple, delicious, and memorable.</p>
+  </div>
+
+  <div class="about-highlights">
+    <div class="highlight">
+      <div class="icon">🥢</div>
+      <h4>Fresh Daily</h4>
+      <p>Ingredients sourced fresh every morning</p>
+    </div>
+    <div class="highlight">
+      <div class="icon">👨‍🍳</div>
+      <h4>Expert Chefs</h4>
+      <p>Trained in traditional Sichuan cooking</p>
+    </div>
+    <div class="highlight">
+      <div class="icon">🌱</div>
+      <h4>Veg Friendly</h4>
+      <p>Plenty of vegetarian options available</p>
+    </div>
+    <div class="highlight">
+      <div class="icon">🏠</div>
+      <h4>Family First</h4>
+      <p>A welcoming space for all ages</p>
+    </div>
+    <div class="highlight">
+      <div class="icon">🏮</div>
+      <h4>25+ Years</h4>
+      <p>Serving the community since 1998</p>
+    </div>
+    <div class="highlight">
+      <div class="icon">⭐</div>
+      <h4>Top Rated</h4>
+      <p>4.8 stars across all platforms</p>
+    </div>
+  </div>
+</div>
+
+<!-- ── CONTACT PAGE ── -->
+<div class="page" id="page-contact">
+  <div class="page-title">Contact & Reserve</div>
+  <div class="page-sub">We'd love to have you at our table</div>
+
+  <div class="contact-grid">
+    <div class="contact-info-box">
+      <h2>Find Us</h2>
+      <div class="c-row">
+        <div class="c-icon">📍</div>
+        <div class="c-text">
+          <strong>Address</strong>
+          <span>88 Dragon Street, Chinatown, NY 10013</span>
+        </div>
+      </div>
+      <div class="c-row">
+        <div class="c-icon">📞</div>
+        <div class="c-text">
+          <strong>Phone</strong>
+          <span>(212) 888-8888</span>
+        </div>
+      </div>
+      <div class="c-row">
+        <div class="c-icon">✉️</div>
+        <div class="c-text">
+          <strong>Email</strong>
+          <span>hello@luckydragonnyc.com</span>
+        </div>
+      </div>
+      <div class="c-row">
+        <div class="c-icon">🕐</div>
+        <div class="c-text">
+          <strong>Hours</strong>
+          <span>Mon–Thu: 11am – 10pm<br>Fri–Sun: 11am – 11pm</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="res-box">
+      <h2>Make a Reservation</h2>
+      <div class="two-col">
+        <div class="field">
+          <label>Name</label>
+          <input type="text" id="r-name" placeholder="Your name"/>
+        </div>
+        <div class="field">
+          <label>Phone</label>
+          <input type="tel" id="r-phone" placeholder="(212) 000-0000"/>
+        </div>
+      </div>
+      <div class="two-col">
+        <div class="field">
+          <label>Date</label>
+          <input type="date" id="r-date"/>
+        </div>
+        <div class="field">
+          <label>Time</label>
+          <input type="time" id="r-time"/>
+        </div>
+      </div>
+      <div class="field">
+        <label>Guests</label>
+        <select id="r-guests">
+          <option>1 person</option>
+          <option selected>2 people</option>
+          <option>3 people</option>
+          <option>4 people</option>
+          <option>5 people</option>
+          <option>6+ people</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Special Requests (optional)</label>
+        <textarea id="r-notes" placeholder="Allergies, seating preferences…"></textarea>
+      </div>
+      <button class="btn-red" style="width:100%;padding:0.8rem" onclick="book()">Book Table</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast">🎉 Table booked! See you soon.</div>
+
+<footer>
+  <span>🐉 Lucky Dragon</span> &nbsp;•&nbsp; 88 Dragon Street, NY &nbsp;•&nbsp; © 2025
+</footer>
+
+<script>
+  // ── PAGE SWITCHING
+  function showPage(name) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.nav-btns button').forEach(b => b.classList.remove('active'));
+    document.getElementById('page-' + name).classList.add('active');
+    const btns = document.querySelectorAll('.nav-btns button');
+    const labels = ['home','menu','about','contact'];
+    btns[labels.indexOf(name)].classList.add('active');
+    window.scrollTo(0, 0);
+  }
+
+  // ── MENU FILTER
+  function filterDish(cat, btn) {
+    document.querySelectorAll('.cat-tab').forEach(t => t.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.dish').forEach(d => {
+      d.style.display = (cat === 'all' || d.dataset.cat === cat) ? 'block' : 'none';
+    });
+  }
+
+  // ── BOOKING
+  function book() {
+    const name = document.getElementById('r-name').value.trim();
+    const date = document.getElementById('r-date').value;
+    const time = document.getElementById('r-time').value;
+    if (!name || !date || !time) {
+      toast('⚠️ Please fill in name, date and time.');
+      return;
+    }
+    const d = new Date(date);
+    const ds = d.toLocaleDateString('en-US', { weekday:'short', month:'short', day:'numeric' });
+    toast(`✅ Booked for ${name} — ${ds} at ${time}`);
+    ['r-name','r-phone','r-date','r-time','r-notes'].forEach(id => document.getElementById(id).value = '');
+  }
+
+  function toast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 3200);
+  }
+</script>
+</body>
+</html>
